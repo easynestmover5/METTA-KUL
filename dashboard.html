@@ -64,7 +64,48 @@
 
         </div>
     </main>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+  const firebaseConfig = {
+    // YAHAN APNA WOHI CONFIG PASTE KAREIN
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Dashboard par cards dikhane ki jagah
+  const membersGrid = document.querySelector('.grid');
+
+  // Real-time data khinchne ka logic
+  const q = query(collection(db, "users"), orderBy("timestamp", "desc"));
+  
+  onSnapshot(q, (snapshot) => {
+    // Purane dummy cards hatane ke liye
+    membersGrid.innerHTML = '';
+
+    snapshot.forEach((doc) => {
+      const user = doc.data();
+      
+      // Naya Card banana
+      const card = `
+        <div class="bg-white p-6 rounded-2xl shadow-sm border hover:shadow-md transition">
+            <div class="flex items-center space-x-4 mb-4">
+                <div class="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center text-2xl">👤</div>
+                <div>
+                    <h4 class="font-bold">${user.userName}</h4>
+                    <span class="text-xs bg-teal-50 text-teal-600 px-2 py-1 rounded-full font-medium">${user.userVibe}</span>
+                </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">"Main Metta Kul parivar ka naya sadasya hoon."</p>
+            <button class="w-full border border-teal-500 text-teal-600 py-2 rounded-xl hover:bg-teal-50 font-medium transition">Baat Karein</button>
+        </div>
+      `;
+      membersGrid.innerHTML += card;
+    });
+  });
+</script>
 </body>
 </html>
 
